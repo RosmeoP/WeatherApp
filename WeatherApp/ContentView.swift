@@ -30,11 +30,9 @@ struct ContentView: View {
                 Button{
                     print("tapped...")
                 }label: {
-                        Text("Change Day time")
-                        .frame(width: 250, height: 50)
-                        .background(Color(.white))
-                        .font(.system(size: 20, weight: .bold, design: .default))
-                        .cornerRadius(10)
+                   WeatherButton(title: "Change Day Time",
+                                 backgrounColor: .white,
+                                 textColor: .gray)
                 }
                 
                 Spacer()
@@ -42,7 +40,6 @@ struct ContentView: View {
                 
             }
             
-        
         }
     }
 }
@@ -127,5 +124,21 @@ struct primaryInfoView: View {
             
         }
         .padding(.bottom )
+    }
+}
+
+struct WeatherButton: View {
+    var title: String
+    var backgrounColor: Color
+    var textColor: Color
+    
+    
+    var body: some View {
+        Text(title)
+            .frame(width: 250, height: 50)
+            .background(backgrounColor)
+            .foregroundColor(textColor)
+            .font(.system(size: 20, weight: .bold, design: .default))
+            .cornerRadius(10)
     }
 }
