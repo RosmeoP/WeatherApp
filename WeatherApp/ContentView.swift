@@ -16,15 +16,32 @@ struct ContentView: View {
             BackgroundView(isNight: $isNight)
             VStack{
                CityInfoView(cityText: "Cupertino, Jucuapa")
-                primaryInfoView(imageName: "cloud.sun.fill", temperatureDay: 72)
+                primaryInfoView(imageName: isNight ? "moon.stars.fill" :                     "cloud.sun.fill",
+                    temperatureDay: isNight ? 65 : 72)
+                    
+                    
+                
+
                 
                 
                 HStack(spacing:18){
-                    WeatherDayView(dayOfWeek: "TUE",                                        imageDay: isNight ? "moon.stars.fill"                   : "cloud.sun.fill",                                  temperatureDay: 72)
-                    WeatherDayView(dayOfWeek: "WEN",                                        imageDay: isNight ?                                  "cloud.moon.fill" :                                   "cloud.sun.fill",                                      temperatureDay: 74)
-                    WeatherDayView(dayOfWeek: "THU",                                        imageDay: "sun.max.fill",                                   temperatureDay: 74)
-                    WeatherDayView(dayOfWeek: "FRI",                                        imageDay: "sun.max.fill",                                   temperatureDay: 72)
-                    WeatherDayView(dayOfWeek: "SAT",                                        imageDay: "cloud.sun.fill",                                  temperatureDay: 74)
+                    WeatherDayView(dayOfWeek: "TUE",                  imageDay: isNight ?                   "moon.fill" :                 "cloud.sun.fill",                             temperatureDay: 72)
+                    WeatherDayView(dayOfWeek: "WEN",                 imageDay: isNight ?                           "cloud.moon.fill" :                           "cloud.sun.fill",                             temperatureDay: isNight ? 71 : 73)
+
+                    WeatherDayView(dayOfWeek: "THU", 
+                        imageDay: isNight ?
+                        "cloud.moon.bolt.fill"  :
+                        "sun.max.fill",
+                        temperatureDay: isNight ? 70 : 74)
+                    WeatherDayView(dayOfWeek: "FRI",
+                        imageDay:isNight ?
+                        "moon.stars.fill" :
+                        "sun.max.fill",
+                        temperatureDay: isNight ? 71 : 74)
+                    WeatherDayView(dayOfWeek: "SAT",                  imageDay: isNight ?
+                        "moon.stars.fill" :
+                        "cloud.sun.fill",
+                        temperatureDay: isNight ? 72 : 69)
                 }
             
 
@@ -32,7 +49,7 @@ struct ContentView: View {
                 
                 Button{
                     isNight.toggle()
-                }label: {
+                }label:{
                    WeatherButton(title: "Change Day Time",
                                  backgrounColor: .white,
                                  textColor: .gray)
@@ -102,19 +119,12 @@ struct CityInfoView: View {
 }
 
 struct primaryInfoView: View {
-    
-    
     var imageName: String
     var temperatureDay: Int
     
-    
     var body: some View {
         
-        
-        
-
-        
-        VStack(spacing: 8){
+      VStack(spacing: 8){
             Image(systemName: imageName)
                 .renderingMode(.original)
                 .resizable()
@@ -123,6 +133,7 @@ struct primaryInfoView: View {
             Text("\(temperatureDay)º")
                 .font(.system(size:70, weight: .medium))
                 .foregroundColor(.white)
+          
             
         }
         .padding(.bottom )
