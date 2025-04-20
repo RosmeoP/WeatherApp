@@ -1,7 +1,7 @@
 // ContentView.swift
-// WeatherApp
+//  WeatherApp
 //
-// Created by Mauricio Parada on 14/4/25.
+//  Created by Mauricio Parada on 14/4/25.
 
 import SwiftUI
 
@@ -15,19 +15,29 @@ struct ContentView: View {
             VStack {
                 CityInfoView(cityText: viewModel.cityName)
 
+                let todayForecast = viewModel.forecast.first
+                let temperature = isNight ?
+                    Int(todayForecast?.day.mintemp_c ?? 0) :
+                    Int(todayForecast?.day.maxtemp_c ?? 0)
+
                 primaryInfoView(
-                    imageName: viewModel.weatherIcon(for: viewModel.condition),
-                    temperatureDay: viewModel.temperature
+                    imageName: viewModel.weatherIcon(for: viewModel.condition, isNight: isNight),
+                    temperatureDay: temperature
                 )
+
+
 
                 HStack(spacing: 18) {
                     ForEach(viewModel.forecast.prefix(5), id: \.date) { forecast in
                         WeatherDayView(
                             dayOfWeek: getDayOfWeek(from: forecast.date),
-                            imageDay: viewModel.weatherIcon(for: forecast.day.condition.text),
-                            temperatureDay: Int(forecast.day.maxtemp_c)
+                            imageDay: viewModel.weatherIcon(for: forecast.day.condition.text, isNight: isNight),
+                            temperatureDay: isNight ?
+                                Int(forecast.day.mintemp_c) :
+                                Int(forecast.day.maxtemp_c)
                         )
                     }
+
                 }
 
                 Spacer()
@@ -46,13 +56,12 @@ struct ContentView: View {
         }
     }
 
-    // Utility function to get the day of the week from the date string
     func getDayOfWeek(from date: String) -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
         if let date = dateFormatter.date(from: date) {
             let dayFormatter = DateFormatter()
-            dayFormatter.dateFormat = "EEE" // Short day of the week (Mon, Tue, etc.)
+            dayFormatter.dateFormat = "EEE"
             return dayFormatter.string(from: date)
         }
         return ""
