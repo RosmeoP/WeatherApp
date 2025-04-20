@@ -1,66 +1,61 @@
+// ContentView.swift
+// WeatherApp
 //
-//  ContentView.swift
-//  WeatherApp
-//
-//  Created by Mauricio Parada on 14/4/25.
-//
+// Created by Mauricio Parada on 14/4/25.
 
 import SwiftUI
 
 struct ContentView: View {
-    
+    @StateObject private var viewModel = WeatherViewModel()
     @State private var isNight = false
     
     var body: some View {
-        ZStack{
+        ZStack {
             BackgroundView(isNight: $isNight)
-            VStack{
-               CityInfoView(cityText: "Cupertino, Jucuapa")
-                primaryInfoView(imageName: isNight ? "moon.stars.fill" :                     "cloud.sun.fill",
-                    temperatureDay: isNight ? 65 : 72)
-                    
-                    
-                
+            VStack {
+                CityInfoView(cityText: viewModel.cityName)
 
-                
-                
-                HStack(spacing:18){
-                    WeatherDayView(dayOfWeek: "TUE",                  imageDay: isNight ?                   "moon.fill" :                 "cloud.sun.fill",                             temperatureDay: 72)
-                    WeatherDayView(dayOfWeek: "WEN",                 imageDay: isNight ?                           "cloud.moon.fill" :                           "cloud.sun.fill",                             temperatureDay: isNight ? 71 : 73)
+                primaryInfoView(
+                    imageName: isNight ? "moon.stars.fill" : "cloud.sun.fill",
+                    temperatureDay: viewModel.temperature
+                )
 
-                    WeatherDayView(dayOfWeek: "THU", 
-                        imageDay: isNight ?
-                        "cloud.moon.bolt.fill"  :
-                        "sun.max.fill",
-                        temperatureDay: isNight ? 70 : 74)
-                    WeatherDayView(dayOfWeek: "FRI",
-                        imageDay:isNight ?
-                        "moon.stars.fill" :
-                        "sun.max.fill",
-                        temperatureDay: isNight ? 71 : 74)
-                    WeatherDayView(dayOfWeek: "SAT",                  imageDay: isNight ?
-                        "moon.stars.fill" :
-                        "cloud.sun.fill",
-                        temperatureDay: isNight ? 72 : 69)
+                HStack(spacing: 18) {
+                    ForEach(viewModel.forecast.prefix(5), id: \.date) { forecast in
+                        WeatherDayView(
+                            dayOfWeek: getDayOfWeek(from: forecast.date),
+                            imageDay: isNight ? "moon.fill" : "cloud.sun.fill",  
+                            temperatureDay: Int(forecast.day.maxtemp_c)
+                        )
+                    }
                 }
-            
 
-                    Spacer()
-                
-                Button{
-                    isNight.toggle()
-                }label:{
-                   WeatherButton(title: "Change Day Time",
-                                 backgrounColor: .white,
-                                 textColor: .gray)
-                }
-                
                 Spacer()
-                
-                
+
+                Button {
+                    isNight.toggle()
+                } label: {
+                    WeatherButton(title: "Change Day Time", backgrounColor: .white, textColor: .gray)
+                }
+
+                Spacer()
             }
-            
         }
+        .onAppear {
+            viewModel.fetchWeather()
+        }
+    }
+
+    // Utility function to get the day of the week from the date string
+    func getDayOfWeek(from date: String) -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        if let date = dateFormatter.date(from: date) {
+            let dayFormatter = DateFormatter()
+            dayFormatter.dateFormat = "EEE" // Short day of the week (Mon, Tue, etc.)
+            return dayFormatter.string(from: date)
+        }
+        return ""
     }
 }
 
@@ -74,45 +69,40 @@ struct WeatherDayView: View {
     var temperatureDay: Int
     
     var body: some View {
-        VStack{
+        VStack {
             Text(dayOfWeek)
-                .font(.system(size:16, weight: .medium, design: .default))
+                .font(.system(size: 16, weight: .medium, design: .default))
                 .foregroundColor(.white)
                 .padding()
-            Image(systemName: imageDay )
+            Image(systemName: imageDay)
                 .renderingMode(.original)
                 .resizable()
-                .aspectRatio(contentMode: (.fit))
+                .aspectRatio(contentMode: .fit)
                 .frame(width: 40, height: 40)
             Text("\(temperatureDay)º")
-                .font(.system(size:28, weight: .medium))
+                .font(.system(size: 28, weight: .medium))
                 .foregroundColor(.white)
-            
-            
-            
         }
     }
 }
 
-struct  BackgroundView: View {
-   @Binding var isNight: Bool
-    
+struct BackgroundView: View {
+    @Binding var isNight: Bool
     
     var body: some View {
         LinearGradient(gradient: Gradient(colors: [isNight ? .black : .blue, isNight ? .gray : Color("LightBlue")]),
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing)
-        .edgesIgnoringSafeArea(/*@START_MENU_TOKEN@*/.all/*@END_MENU_TOKEN@*/)
+                       startPoint: .topLeading,
+                       endPoint: .bottomTrailing)
+        .edgesIgnoringSafeArea(.all)
     }
 }
 
 struct CityInfoView: View {
-    
     var cityText: String
     
     var body: some View {
         Text(cityText)
-            .font(.system(size:32, weight: .medium, design: .default))
+            .font(.system(size: 32, weight: .medium, design: .default))
             .foregroundColor(.white)
             .padding()
     }
@@ -123,20 +113,17 @@ struct primaryInfoView: View {
     var temperatureDay: Int
     
     var body: some View {
-        
-      VStack(spacing: 8){
+        VStack(spacing: 8) {
             Image(systemName: imageName)
                 .renderingMode(.original)
                 .resizable()
-                .aspectRatio(contentMode: (.fit))
+                .aspectRatio(contentMode: .fit)
                 .frame(width: 180, height: 180)
             Text("\(temperatureDay)º")
-                .font(.system(size:70, weight: .medium))
+                .font(.system(size: 70, weight: .medium))
                 .foregroundColor(.white)
-          
-            
         }
-        .padding(.bottom )
+        .padding(.bottom)
     }
 }
 
