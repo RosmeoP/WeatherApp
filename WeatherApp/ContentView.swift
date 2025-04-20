@@ -16,7 +16,7 @@ struct ContentView: View {
                 CityInfoView(cityText: viewModel.cityName)
 
                 primaryInfoView(
-                    imageName: isNight ? "moon.stars.fill" : "cloud.sun.fill",
+                    imageName: viewModel.weatherIcon(for: viewModel.condition),
                     temperatureDay: viewModel.temperature
                 )
 
@@ -24,7 +24,7 @@ struct ContentView: View {
                     ForEach(viewModel.forecast.prefix(5), id: \.date) { forecast in
                         WeatherDayView(
                             dayOfWeek: getDayOfWeek(from: forecast.date),
-                            imageDay: isNight ? "moon.fill" : "cloud.sun.fill",  
+                            imageDay: viewModel.weatherIcon(for: forecast.day.condition.text),
                             temperatureDay: Int(forecast.day.maxtemp_c)
                         )
                     }
@@ -126,4 +126,3 @@ struct primaryInfoView: View {
         .padding(.bottom)
     }
 }
-

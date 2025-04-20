@@ -18,7 +18,7 @@ class WeatherViewModel: ObservableObject {
     @Published var condition: String = ""
     @Published var forecast: [ForecastDay] = []
 
-    private let apiKey = "YOUR_API_KEY"
+    private let apiKey = "API_KEY"
 
     func fetchWeather(for city: String = "Jucuapa") {
         let urlString = "https://api.weatherapi.com/v1/forecast.json?key=\(apiKey)&q=\(city)&days=6&aqi=no"  
@@ -47,13 +47,14 @@ class WeatherViewModel: ObservableObject {
         }.resume()
     }
 
-    // Function to map weather condition to SF Symbols
-    func weatherIcon(for condition: String) -> String {
+    // WeatherViewModel.swift
+    func weatherIcon(for condition: String, isNight: Bool) -> String {
+        print("Mapping condition: \(condition), isNight: \(isNight)") // Debugging line
         switch condition.lowercased() {
         case "clear":
-            return "sun.max.fill"
+            return isNight ? "moon.stars.fill" : "sun.max.fill"
         case "partly cloudy":
-            return "cloud.sun.fill"
+            return isNight ? "cloud.moon.fill" : "cloud.sun.fill"
         case "cloudy":
             return "cloud.fill"
         case "rain":
@@ -67,8 +68,9 @@ class WeatherViewModel: ObservableObject {
         case "windy":
             return "wind"
         default:
-            return "cloud.sun.fill" // Default icon for unknown conditions
+            return isNight ? "moon.stars.fill" : "cloud.sun.fill" // Default icon
         }
     }
+
 }
 
