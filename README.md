@@ -19,7 +19,7 @@ WeatherApp is a simple Swift application that provides real-time weather updates
 
 ## Tecnologías Usadas
 - Swift
-- [Añade aquí las APIs o frameworks usados]
+- Weather API
 
 ## Contribuciones
 ¡Las contribuciones son bienvenidas! Por favor, crea un issue o envía un pull request para sugerencias o correcciones.
